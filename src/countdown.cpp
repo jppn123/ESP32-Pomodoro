@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "util.h"
 #include "logs.h"
+#include "buzzer.h"
 
 unsigned long previousMillis = 0;
 
@@ -58,6 +59,7 @@ void handleCountdownTick() {
             Serial.println(formatTimeMMSS(countdownSeconds));
           } else {
             Serial.println("Tempo esgotado!");
+            finishTime();
             isRunning = false;
           }
         }

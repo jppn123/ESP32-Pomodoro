@@ -3,18 +3,12 @@
 #include "bot.h"
 #include "wifiCred.h"
 #include "countdown.h"
-#include "WiFi.h"
 #include "util.h"
 #include "logs.h"
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOT_TOKEN, client);
 unsigned long lastTimeBotRan;
-
-void comunicateToBot();
-void setupBot();
-void handleNewMessages(int numNewMessages);
-
 
 void handleNewMessages(int numNewMessages){
     for (int i=0; i<numNewMessages; i++) {
@@ -86,11 +80,6 @@ void handleNewMessages(int numNewMessages){
 }
 
 void setupBot(){
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("Connected!");
     client.setCACert(TELEGRAM_CERTIFICATE_ROOT); 
     initFS();
 }

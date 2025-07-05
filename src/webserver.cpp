@@ -1,4 +1,3 @@
-#include <WiFi.h>
 #include <WebServer.h>
 #include "countdown.h"
 #include "util.h"
@@ -17,11 +16,6 @@ void serverTask(void *pvParameters) {
 }
 
 void setupWebServer() {
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(200);
-        Serial.println("[WebServer] Aguardando conexão com Wi-Fi...");
-    }
-
     server.on("/", HTTP_GET, []() {
         String html = R"rawliteral(
             <!DOCTYPE html>

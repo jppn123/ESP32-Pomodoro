@@ -1,8 +1,5 @@
-// logs.cpp
-
 #include <LittleFS.h>
 #include "logs.h"
-#include <LittleFS.h>
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 const char* LOGS_FILENAME = "/logs.txt";
