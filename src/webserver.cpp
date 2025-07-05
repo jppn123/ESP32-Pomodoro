@@ -72,6 +72,20 @@ void setupWebServer() {
                         gap: 15px;
                         margin-top: 20px;
                     }
+                    .time-input {
+                        display: flex;
+                        justify-content: center;
+                        gap: 10px;
+                        margin-bottom: 20px;
+                    }
+                    input[type=number] {
+                        padding: 8px;
+                        font-size: 1rem;
+                        width: 60px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        text-align: center;
+                    }
                     button {
                         padding: 10px 20px;
                         font-size: 1rem;
@@ -86,6 +100,8 @@ void setupWebServer() {
                     .pause-btn:hover { background: #d65f43; }
                     .reset-btn { background: #264653; color: #fff; }
                     .reset-btn:hover { background: #1e3a47; }
+                    .set-time-btn { background: #f4a261; color: #fff; }
+                    .set-time-btn:hover { background: #e89b53; }
                     .info-section {
                         margin-top: 40px;
                     }
@@ -133,6 +149,12 @@ void setupWebServer() {
                     <div class="timer-section">
                         <div class="status" id="status">Carregando estado...</div>
                         <div class="time" id="time">25:00</div>
+                        <div class="time-input">
+                            <input type="number" id="minutes" min="0" max="59" placeholder="MM" value="25">
+                            <span>:</span>
+                            <input type="number" id="seconds" min="0" max="59" placeholder="SS" value="00">
+                            <button class="set-time-btn" onclick="setPomodoroTime()">Definir Tempo</button>
+                        </div>
                         <div class="controls">
                             <button class="start-btn" onclick="controlPomodoro('start')">Iniciar</button>
                             <button class="pause-btn" onclick="controlPomodoro('pause')">Pausar</button>
@@ -194,6 +216,18 @@ void setupWebServer() {
                         }
                     }
 
+                    async function setPomodoroTime() {
+                        try {
+                            const minutes = document.getElementById("minutes").value || 0;
+                            const seconds = document.getElementById("seconds").value || 0;
+                            await fetch(`/set-time?minutes=${minutes}&seconds=${seconds}`, { method: 'POST' });
+                            updateData();
+                        } catch (error) {
+                            console.error('Erro ao definir tempo:', error);
+                            document.getElementById("status").innerText = "Erro ao definir tempo";
+                        }
+                    }
+
                     setInterval(updateData, 1000);
                     updateData();
                 </script>
@@ -210,6 +244,44 @@ void setupWebServer() {
         json += "\"time\": \"" + formatTimeMMSS(getCountdown()) + "\"";
         json += "}";
         server.send(200, "application/json", json);
+    });
+
+    server.on("/control", HTTP_POST, []() {
+        if (server.hasArg("action")) {
+            String action = server.arg("action");
+            if (action == "start") {
+                startCountdown();
+                server.send(200, "text/plain", "Pomodoro iniciado");
+            } else if (action == "pause") {
+                pauseCountdown();
+                server.send(200, "text/plain", "Pomodoro pausado");
+            } else if (action == "reset") {
+                setCountdown(25 * 60); // Reset to default 25 minutes
+                pauseCountdown(); // Ensure it's paused after reset
+                server.send(200, "text/plain", "Pomodoro reiniciado");
+            } else {
+                server.send(400, "text/plain", "Ação inválida");
+            }
+        } else {
+            server.send(400, "text/plain", "Ação não especificada");
+        }
+    });
+
+    server.on("/set-time", HTTP_POST, []() {
+        if (server.hasArg("minutes") && server.hasArg("seconds")) {
+            int minutes = server.arg("minutes").toInt();
+            int seconds = server.arg("seconds").toInt();
+            if (minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59) {
+                uint32_t totalSeconds = minutes * 60 + seconds;
+                setCountdown(totalSeconds);
+                pauseCountdown(); // Pause after setting new time
+                server.send(200, "text/plain", "Tempo definido");
+            } else {
+                server.send(400, "text/plain", "Valores de tempo inválidos");
+            }
+        } else {
+            server.send(400, "text/plain", "Parâmetros de tempo não especificados");
+        }
     });
 
     server.begin();
