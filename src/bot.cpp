@@ -2,9 +2,12 @@
 #include <vector>
 #include "bot.h"
 #include "wifiCred.h"
+#include "countdown.h"
+#include "WiFi.h"
+#include "util.h"
 
 WiFiClientSecure client;
-UniversalTelegramBot bot(BOTtoken, client);
+UniversalTelegramBot bot(BOT_TOKEN, client);
 unsigned long lastTimeBotRan;
 
 void comunicateToBot();
@@ -16,8 +19,8 @@ void handleNewMessages(int numNewMessages){
     for (int i=0; i<numNewMessages; i++) {
         String chat_id = String(bot.messages[i].chat_id);
         if (chat_id != CHAT_ID){
-        bot.sendMessage(chat_id, "Usuário não autorizado", "");
-        continue;
+            bot.sendMessage(chat_id, "Usuário não autorizado", "");
+            continue;
         }
         
         String text = bot.messages[i].text;
@@ -26,6 +29,7 @@ void handleNewMessages(int numNewMessages){
         if (text == "/start" || text == "/info") {
             String welcome = "Olá " + from_name + ",\n";
             welcome += "Use os comandos abaixo para controlar o sistema:\n\n";
+            welcome += "/checar_tempo - Retorna o tempo setado no contador\n";
             welcome += "/iniciar_tempo - Inicia o tempo decrementando o contador\n";
             welcome += "/pausar_tempo - Pausa o contador\n";
             welcome += "/adicionar_tempo {tempo} - Adiciona um valor do contador no formato HH:MM:SS\n";
@@ -37,39 +41,42 @@ void handleNewMessages(int numNewMessages){
 
         if (text == "/iniciar_tempo") {
         
-            String response = "Medição atual da caixa de agua:\n";
-        
+            String response = "Tempo iniciado em " + formatTimeMMSS(getCountdown());
+            
+            startCountdown();
             bot.sendMessage(chat_id, response, "");
         }
 
         if (text == "/pausar_tempo") {
         
-            String response = "Medição atual da caixa de agua:\n";
-        
+            String response = "Tempo pausado em " + formatTimeMMSS(getCountdown());
+            
+            pauseCountdown();
             bot.sendMessage(chat_id, response, "");
         }
 
-        if (text.startsWith("/adicionar_tempo")) {
+        // if (text.startsWith("/adicionar_tempo")) {
         
-            String response = "Medição atual da caixa de agua:\n";
+        //     String response = "Medição atual da caixa de agua:\n";
         
-            bot.sendMessage(chat_id, response, "");
-        }
+        //     bot.sendMessage(chat_id, response, "");
+        // }
 
-        if (text.startsWith("/diminuir_tempo")) {
+        // if (text.startsWith("/diminuir_tempo")) {
         
-            String response = "Medição atual da caixa de agua:\n";
+        //     String response = "Medição atual da caixa de agua:\n";
         
-            bot.sendMessage(chat_id, response, "");
-        }
+        //     bot.sendMessage(chat_id, response, "");
+        // }
         
         if (text.startsWith("/definir_tempo")) {
-            String logMessage = "Logs disponíveis:\n";
-            logMessage += "/log_users - Visualizar logs de usuários\n";
-            logMessage += "/log_water - Visualizar logs da caixa d'água\n";
-            logMessage += "/users_auth - Visualizar usuarios autorizados\n";
-            logMessage += "/info - Visualizar todos os comandos principais novamente\n";
-            bot.sendMessage(chat_id, logMessage, "");
+            String response = "Tempo definido para X segundos";
+            
+            bot.sendMessage(chat_id, response, "");
+        }
+   
+        if (text.startsWith("/checar_tempo")) {            
+            bot.sendMessage(chat_id, formatTimeMMSS(getCountdown()), "");
         }
     }
 }
@@ -81,6 +88,7 @@ void setupBot(){
         delay(500);
         Serial.print(".");
     }
+    Serial.println("Connected!");
     client.setCACert(TELEGRAM_CERTIFICATE_ROOT); 
 }
 

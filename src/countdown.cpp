@@ -1,0 +1,50 @@
+#include <Arduino.h>
+#include "util.h"
+
+unsigned long previousMillis = 0;
+
+uint32_t countdownSeconds = 1200;
+bool isRunning = false;
+
+void setCountdown(uint32_t seconds);
+uint32_t getCountdown();
+void pauseCountdown();
+void startCountdown();
+
+void startCountdown() {
+    isRunning = true;
+    previousMillis = millis();
+    Serial.println("Tempo startado!");
+}
+  
+void pauseCountdown() {
+    isRunning = false;
+    Serial.println("Tempo pausado!");
+}
+
+void setCountdown(uint32_t seconds) {
+    countdownSeconds = seconds;
+    Serial.println("Tempo setado!");
+}
+
+uint32_t getCountdown() {
+    return countdownSeconds;
+}
+
+void handleCountdownTick() {
+    if (isRunning) {
+        unsigned long currentMillis = millis();
+        if (currentMillis - previousMillis >= 1000) {
+          previousMillis = currentMillis;
+    
+          if (countdownSeconds > 0) {
+            countdownSeconds--;
+            Serial.print("Tempo restante: ");
+            Serial.println(formatTimeMMSS(countdownSeconds));
+          } else {
+            Serial.println("Tempo esgotado!");
+            isRunning = false;
+          }
+        }
+    }
+}
