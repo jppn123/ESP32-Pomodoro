@@ -31,6 +31,19 @@ uint32_t getCountdown() {
     return countdownSeconds;
 }
 
+void adjustCountdown(int32_t secondsDelta) {
+    int32_t newValue = (int32_t)countdownSeconds + secondsDelta;
+
+    if (newValue < 0) {
+        countdownSeconds = 0;
+    } else {
+        countdownSeconds = (uint32_t)newValue;
+    }
+
+    Serial.print("Novo tempo ajustado: ");
+    Serial.println(formatTimeMMSS(countdownSeconds));
+}
+
 void handleCountdownTick() {
     if (isRunning) {
         unsigned long currentMillis = millis();

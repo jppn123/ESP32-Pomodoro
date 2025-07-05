@@ -30,11 +30,9 @@ void handleNewMessages(int numNewMessages){
             String welcome = "Olá " + from_name + ",\n";
             welcome += "Use os comandos abaixo para controlar o sistema:\n\n";
             welcome += "/checar_tempo - Retorna o tempo setado no contador\n";
+            welcome += "/definir_tempo {tempo} - Insere um valor para o contador no formato HH:MM:SS\n";
             welcome += "/iniciar_tempo - Inicia o tempo decrementando o contador\n";
             welcome += "/pausar_tempo - Pausa o contador\n";
-            welcome += "/adicionar_tempo {tempo} - Adiciona um valor do contador no formato HH:MM:SS\n";
-            welcome += "/diminuir_tempo {tempo} - Diminui um valor do contador no formato HH:MM:SS\n";
-            welcome += "/definir_tempo {tempo} - Insere um valor para o contador no formato HH:MM:SS\n";
             
             bot.sendMessage(chat_id, welcome, "");
         }
@@ -55,23 +53,23 @@ void handleNewMessages(int numNewMessages){
             bot.sendMessage(chat_id, response, "");
         }
 
-        // if (text.startsWith("/adicionar_tempo")) {
-        
-        //     String response = "Medição atual da caixa de agua:\n";
-        
-        //     bot.sendMessage(chat_id, response, "");
-        // }
-
-        // if (text.startsWith("/diminuir_tempo")) {
-        
-        //     String response = "Medição atual da caixa de agua:\n";
-        
-        //     bot.sendMessage(chat_id, response, "");
-        // }
-        
         if (text.startsWith("/definir_tempo")) {
-            String response = "Tempo definido para X segundos";
-            
+            int spaceIndex = text.indexOf(' ');
+            if (spaceIndex == -1) {
+                bot.sendMessage(chat_id, "Formato inválido. Use: /definir_tempo MM:SS", "");
+                return;
+            }
+        
+            String timeParam = text.substring(spaceIndex + 1); // pega "01:20"
+        
+            int totalSeconds = parseTimeMMSS(timeParam);
+            if (totalSeconds < 0) {
+                bot.sendMessage(chat_id, "Formato de tempo inválido. Use MM:SS (ex: 05:30)", "");
+                return;
+            }
+        
+            setCountdown(totalSeconds); // sua função para setar o tempo
+            String response = "Tempo definido para " + formatTimeMMSS(totalSeconds);
             bot.sendMessage(chat_id, response, "");
         }
    

@@ -6,3 +6,12 @@ String formatTimeMMSS(int totalSeconds) {
 
     return String(minutes) + "min" + String(seconds) + "seg";
 }
+
+int parseTimeMMSS(const String& timeStr) {
+    int minutes, seconds;
+    int matched = sscanf(timeStr.c_str(), "%d:%d", &minutes, &seconds);
+    if (matched != 2 || minutes < 0 || seconds < 0 || seconds >= 60) {
+        return -1; // Formato inválido
+    }
+    return minutes * 60 + seconds;
+}
