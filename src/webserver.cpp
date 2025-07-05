@@ -5,6 +5,17 @@
 
 WebServer server(80);
 
+// Task handle for the web server
+TaskHandle_t serverTaskHandle = NULL;
+
+// Task function for handling server clients
+void serverTask(void *pvParameters) {
+    for (;;) {
+        server.handleClient();
+        vTaskDelay(1 / portTICK_PERIOD_MS); // Yield to other tasks
+    }
+}
+
 void setupWebServer() {
     while (WiFi.status() != WL_CONNECTED) {
         delay(200);
@@ -65,12 +76,6 @@ void setupWebServer() {
                         font-size: 1.3rem;
                         color: #264653;
                         margin-bottom: 20px;
-                    }
-                    .controls {
-                        display: flex;
-                        justify-content: center;
-                        gap: 15px;
-                        margin-top: 20px;
                     }
                     .time-input {
                         display: flex;
@@ -196,8 +201,12 @@ void setupWebServer() {
                 </div>
 
                 <script>
+                    let lastUpdateTime = 0;
                     async function updateData() {
                         try {
+                            const now = Date.now();
+                            if (now - lastUpdateTime < 900) return; // Prevent too frequent updates
+                            lastUpdateTime = now;
                             const res = await fetch("/status");
                             const data = await res.json();
                             document.getElementById("status").innerText = data.running ? "Pomodoro em andamento" : "Pomodoro pausado";
@@ -286,8 +295,19 @@ void setupWebServer() {
 
     server.begin();
     Serial.println("Servidor HTTP iniciado: http://" + WiFi.localIP().toString());
+
+    // Create a task for handling server clients
+    xTaskCreatePinnedToCore(
+        serverTask,           // Task function
+        "ServerTask",        // Task name
+        4096,                // Stack size (bytes)
+        NULL,                // Task parameters
+        1,                   // Priority
+        &serverTaskHandle,   // Task handle
+        1                    // Core (0 or 1, use 1 for web server to avoid core 0's WiFi tasks)
+    );
 }
 
 void serverHandleClient() {
-    server.handleClient(); 
+    // No longer needed in the main loop, handled by serverTask
 }
