@@ -39,7 +39,7 @@ void setupWebServer() {
                         padding: 20px;
                         line-height: 1.6;
                     }
-                    .container {
+                    main.container {
                         max-width: 800px;
                         margin: 0 auto;
                         background: #fff;
@@ -59,7 +59,7 @@ void setupWebServer() {
                         font-size: 1.1rem;
                         margin-bottom: 30px;
                     }
-                    .timer-section {
+                    section.timer-section {
                         text-align: center;
                         padding: 20px;
                         background: #f9f9f9;
@@ -80,8 +80,10 @@ void setupWebServer() {
                     .time-input {
                         display: flex;
                         justify-content: center;
+                        align-items: center;
                         gap: 10px;
                         margin-bottom: 20px;
+                        flex-wrap: wrap;
                     }
                     input[type=number] {
                         padding: 8px;
@@ -90,6 +92,9 @@ void setupWebServer() {
                         border: 1px solid #ccc;
                         border-radius: 5px;
                         text-align: center;
+                    }
+                    label {
+                        font-size: 1rem;
                     }
                     button {
                         padding: 10px 20px;
@@ -107,25 +112,22 @@ void setupWebServer() {
                     .reset-btn:hover { background: #1e3a47; }
                     .set-time-btn { background: #f4a261; color: #fff; }
                     .set-time-btn:hover { background: #e89b53; }
-                    .info-section {
+                    section.info-section {
                         margin-top: 40px;
                     }
-                    .info-section h2 {
+                    section.info-section h2 {
                         color: #e76f51;
                         font-size: 1.8rem;
                         margin-bottom: 15px;
                     }
-                    .info-section p {
+                    section.info-section p {
                         margin-bottom: 15px;
                         color: #444;
                     }
-                    .info-section ul {
-                        list-style-type: disc;
-                        padding-left: 30px;
+                    section.info-section ul,
+                    section.info-section ol {
+                        margin-left: 30px;
                         margin-bottom: 20px;
-                    }
-                    .info-section li {
-                        margin-bottom: 10px;
                     }
                     .references {
                         font-size: 0.9rem;
@@ -144,30 +146,38 @@ void setupWebServer() {
                         color: #777;
                         font-size: 0.9rem;
                     }
+                    button:focus,
+                    input:focus {
+                        outline: 2px solid #e76f51;
+                        outline-offset: 2px;
+                    }
                 </style>
             </head>
             <body>
-                <div class="container">
-                    <h1>Pomodoro ESP32 🍅</h1>
+                <main class="container" role="main">
+                    <h1>Pomodoro ESP32 <span role="img" aria-label="tomate">🍅</span></h1>
                     <p class="subtitle">Maximize sua produtividade com a técnica Pomodoro</p>
 
-                    <div class="timer-section">
-                        <div class="status" id="status">Carregando estado...</div>
-                        <div class="time" id="time">25:00</div>
+                    <section class="timer-section" aria-labelledby="statusLabel">
+                        <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true">Carregando estado...</div>
+                        <div id="time" class="time" role="timer" aria-live="off" aria-atomic="true">25:00</div>
+
                         <div class="time-input">
+                            <label for="minutes">Minutos:</label>
                             <input type="number" id="minutes" min="0" max="59" placeholder="MM" value="25">
-                            <span>:</span>
+                            <label for="seconds">Segundos:</label>
                             <input type="number" id="seconds" min="0" max="59" placeholder="SS" value="00">
                             <button class="set-time-btn" onclick="setPomodoroTime()">Definir Tempo</button>
                         </div>
+
                         <div class="controls">
                             <button class="start-btn" onclick="controlPomodoro('start')">Iniciar</button>
                             <button class="pause-btn" onclick="controlPomodoro('pause')">Pausar</button>
                             <button class="reset-btn" onclick="controlPomodoro('reset')">Reiniciar</button>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="info-section">
+                    <section class="info-section">
                         <h2>Sobre a Técnica Pomodoro</h2>
                         <p>A técnica Pomodoro, desenvolvida por Francesco Cirillo no final dos anos 1980, é um método de gerenciamento de tempo que promove a produtividade e o foco. Ela divide o trabalho em intervalos de 25 minutos, chamados "pomodoros", seguidos por pausas curtas de 5 minutos. Após quatro pomodoros, faz-se uma pausa mais longa de 15-30 minutos.</p>
                         
@@ -180,32 +190,32 @@ void setupWebServer() {
                         </ul>
 
                         <h3>Como Usar</h3>
-                        <p>
-                            1. Escolha uma tarefa.<br>
-                            2. Inicie o temporizador (25 minutos).<br>
-                            3. Trabalhe sem interrupções até o alarme.<br>
-                            4. Faça uma pausa de 5 minutos.<br>
-                            5. Após 4 pomodoros, faça uma pausa longa (15-30 minutos).
-                        </p>
+                        <ol>
+                            <li>Escolha uma tarefa.</li>
+                            <li>Inicie o temporizador (25 minutos).</li>
+                            <li>Trabalhe sem interrupções até o alarme.</li>
+                            <li>Faça uma pausa de 5 minutos.</li>
+                            <li>Após 4 pomodoros, faça uma pausa longa (15–30 minutos).</li>
+                        </ol>
 
                         <p class="references">
                             Referências:<br>
                             <a href="https://francescocirillo.com/pages/pomodoro-technique" target="_blank">Francesco Cirillo - Técnica Pomodoro</a><br>
                             <a href="https://www.forbes.com/sites/bryancollinseurope/2020/03/03/the-pomodoro-technique/" target="_blank">Forbes - The Pomodoro Technique</a>
                         </p>
-                    </div>
+                    </section>
 
                     <footer>
-                        Desenvolvido para ESP32 | Técnica Pomodoro © 2025
+                        Desenvolvido com ESP32 | Jonatha Targino; João Pedro Barros © 2025
                     </footer>
-                </div>
+                </main>
 
                 <script>
                     let lastUpdateTime = 0;
                     async function updateData() {
                         try {
                             const now = Date.now();
-                            if (now - lastUpdateTime < 900) return; // Prevent too frequent updates
+                            if (now - lastUpdateTime < 900) return;
                             lastUpdateTime = now;
                             const res = await fetch("/status");
                             const data = await res.json();
