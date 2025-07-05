@@ -5,6 +5,7 @@
 #include "countdown.h"
 #include "WiFi.h"
 #include "util.h"
+#include "logs.h"
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOT_TOKEN, client);
@@ -33,6 +34,7 @@ void handleNewMessages(int numNewMessages){
             welcome += "/definir_tempo {tempo} - Insere um valor para o contador no formato HH:MM:SS\n";
             welcome += "/iniciar_tempo - Inicia o tempo decrementando o contador\n";
             welcome += "/pausar_tempo - Pausa o contador\n";
+            welcome += "/checar_logs - Verifica histórico de ações sobre o timer\n";
             
             bot.sendMessage(chat_id, welcome, "");
         }
@@ -43,6 +45,7 @@ void handleNewMessages(int numNewMessages){
             
             startCountdown();
             bot.sendMessage(chat_id, response, "");
+            addLog(response);
         }
 
         if (text == "/pausar_tempo") {
@@ -51,6 +54,7 @@ void handleNewMessages(int numNewMessages){
             
             pauseCountdown();
             bot.sendMessage(chat_id, response, "");
+            addLog(response);
         }
 
         if (text.startsWith("/definir_tempo")) {
@@ -71,10 +75,15 @@ void handleNewMessages(int numNewMessages){
             setCountdown(totalSeconds); // sua função para setar o tempo
             String response = "Tempo definido para " + formatTimeMMSS(totalSeconds);
             bot.sendMessage(chat_id, response, "");
+            addLog(response);
         }
    
         if (text.startsWith("/checar_tempo")) {            
             bot.sendMessage(chat_id, formatTimeMMSS(getCountdown()), "");
+        }
+
+        if (text.startsWith("/checar_logs")) {
+            bot.sendMessage(chat_id, readLastLogs(10), "");
         }
     }
 }
@@ -86,6 +95,7 @@ void setupBot(){
     }
     Serial.println("Connected!");
     client.setCACert(TELEGRAM_CERTIFICATE_ROOT); 
+    initFS();
 }
 
 void comunicateToBot(){
