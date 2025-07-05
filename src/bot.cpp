@@ -45,7 +45,6 @@ void handleNewMessages(int numNewMessages){
             
             startCountdown();
             bot.sendMessage(chat_id, response, "");
-            addLog(response);
         }
 
         if (text == "/pausar_tempo") {
@@ -54,7 +53,6 @@ void handleNewMessages(int numNewMessages){
             
             pauseCountdown();
             bot.sendMessage(chat_id, response, "");
-            addLog(response);
         }
 
         if (text.startsWith("/definir_tempo")) {
@@ -75,7 +73,6 @@ void handleNewMessages(int numNewMessages){
             setCountdown(totalSeconds); // sua função para setar o tempo
             String response = "Tempo definido para " + formatTimeMMSS(totalSeconds);
             bot.sendMessage(chat_id, response, "");
-            addLog(response);
         }
    
         if (text.startsWith("/checar_tempo")) {            

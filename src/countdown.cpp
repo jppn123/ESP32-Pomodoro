@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "util.h"
+#include "logs.h"
 
 unsigned long previousMillis = 0;
 
@@ -12,19 +13,21 @@ void pauseCountdown();
 void startCountdown();
 
 void startCountdown() {
+    if (isRunning) return;
     isRunning = true;
     previousMillis = millis();
-    Serial.println("Tempo startado!");
+    addLog("Tempo iniciado em " + formatTimeMMSS(countdownSeconds));
 }
   
 void pauseCountdown() {
+    if (!isRunning) return;
     isRunning = false;
-    Serial.println("Tempo pausado!");
+    addLog("Tempo pausado em " + formatTimeMMSS(countdownSeconds));
 }
 
 void setCountdown(uint32_t seconds) {
     countdownSeconds = seconds;
-    Serial.println("Tempo setado!");
+    addLog("Tempo definido para " + formatTimeMMSS(countdownSeconds));
 }
 
 uint32_t getCountdown() {
@@ -40,8 +43,7 @@ void adjustCountdown(int32_t secondsDelta) {
         countdownSeconds = (uint32_t)newValue;
     }
 
-    Serial.print("Novo tempo ajustado: ");
-    Serial.println(formatTimeMMSS(countdownSeconds));
+    addLog("Tempo ajustado para " + formatTimeMMSS(countdownSeconds));
 }
 
 void handleCountdownTick() {
