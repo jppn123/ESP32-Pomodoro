@@ -17,8 +17,6 @@ void setup() {
     Serial.begin(115200);
 
     setupRelay();
-    modifyRelay(false);
-    delay(100);
     setupLCD();
     setupButtons();
 
@@ -29,14 +27,12 @@ void setup() {
     setupWiFi();
     setupBot();
     setupWebServer();
-    
 }
 
 void loop() {
     serverHandleClient();
     comunicateToBot();
 }
-
 
 void countdownTask(void* paramater) {
     while(true) {
@@ -51,8 +47,6 @@ void lcdTask(void* parameter) {
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
-
-
 
 void buttonTask(void* parameter) {
     while (true) {
