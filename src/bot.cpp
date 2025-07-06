@@ -25,7 +25,7 @@ void handleNewMessages(int numNewMessages){
             String welcome = "Olá " + from_name + ",\n";
             welcome += "Use os comandos abaixo para controlar o sistema:\n\n";
             welcome += "/checar_tempo - Retorna o tempo setado no contador\n";
-            welcome += "/definir_tempo {tempo} - Insere um valor para o contador no formato HH:MM:SS\n";
+            welcome += "/definir_tempo {tempo} - Insere um valor para o contador no formato MM:SS\n";
             welcome += "/iniciar_tempo - Inicia o tempo decrementando o contador\n";
             welcome += "/pausar_tempo - Pausa o contador\n";
             welcome += "/checar_logs - Verifica histórico de ações sobre o timer\n";
