@@ -158,7 +158,7 @@ void setupWebServer() {
 
                         <div class="time-input">
                             <label for="minutes">Minutos:</label>
-                            <input type="number" id="minutes" min="0" max="59" placeholder="MM" value="25">
+                            <input type="number" id="minutes" min="0" max="59" placeholder="MM" value="20">
                             <label for="seconds">Segundos:</label>
                             <input type="number" id="seconds" min="0" max="59" placeholder="SS" value="00">
                             <button class="set-time-btn" onclick="setPomodoroTime()">Definir Tempo</button>
@@ -207,13 +207,25 @@ void setupWebServer() {
                 <script>
                     let lastUpdateTime = 0;
                     async function updateData() {
+                        let actState = "";
                         try {
                             const now = Date.now();
                             if (now - lastUpdateTime < 900) return;
                             lastUpdateTime = now;
                             const res = await fetch("/status");
                             const data = await res.json();
-                            document.getElementById("status").innerText = data.running ? "Pomodoro em andamento" : "Pomodoro pausado";
+                            if(data.state == "updating") {
+                                actState = "Ajustando tempo do Pomodoro";
+                            } else if(data.state == "started") {
+                                actState = "Pomodoro em andamento";
+                            } else if(data.state == "restarted") {
+                                actState = "Pomodoro reiniciado";
+                            } else if(data.state == "updated") {
+                                actState = "Tempo do Pomodoro atualizado";
+                            } else {
+                                actState = "Pomodoro pausado";
+                            }
+                            document.getElementById("status").innerText = actState;
                             document.getElementById("time").innerText = data.time;
                         } catch (error) {
                             document.getElementById("status").innerText = "Erro ao carregar estado";
@@ -253,7 +265,7 @@ void setupWebServer() {
 
     server.on("/status", HTTP_GET, []() {
         String json = "{";
-        json += "\"running\": " + String(isRunning ? "true" : "false") + ",";
+        json += "\"state\": \"" + state + "\",";
         json += "\"time\": \"" + formatTimeMMSS(getCountdown()) + "\"";
         json += "}";
         server.send(200, "application/json", json);
@@ -269,8 +281,8 @@ void setupWebServer() {
                 pauseCountdown();
                 server.send(200, "text/plain", "Pomodoro pausado");
             } else if (action == "reset") {
-                setCountdown(25 * 60); // Reset to default 25 minutes
-                pauseCountdown(); // Ensure it's paused after reset
+                setCountdown(20 * 60);
+                pauseCountdown();
                 server.send(200, "text/plain", "Pomodoro reiniciado");
             } else {
                 server.send(400, "text/plain", "Ação inválida");
@@ -286,6 +298,7 @@ void setupWebServer() {
             int seconds = server.arg("seconds").toInt();
             if (minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59) {
                 uint32_t totalSeconds = minutes * 60 + seconds;
+                newCountdown(totalSeconds);
                 setCountdown(totalSeconds);
                 pauseCountdown(); // Pause after setting new time
                 server.send(200, "text/plain", "Tempo definido");
