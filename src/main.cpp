@@ -5,9 +5,13 @@
 #include "wifiCred.h"
 #include "relay.h"
 #include "lcd.h"
+#include "buttons.h"
 
 void countdownTask(void* paramater);
 void lcdTask(void* parameter);
+void buttonTask(void* parameter);
+
+TaskHandle_t buttonTaskHandle = NULL;
 
 void setup() {
     Serial.begin(115200);
@@ -16,9 +20,11 @@ void setup() {
     modifyRelay(false);
     delay(100);
     setupLCD();
+    setupButtons();
 
     xTaskCreatePinnedToCore(countdownTask, "CountdownTask", 4096, NULL, 1, NULL, 0);
     xTaskCreatePinnedToCore(lcdTask, "LCDTask", 4096, NULL, 1, NULL, 1); 
+    xTaskCreatePinnedToCore(buttonTask, "ButtonTask", 4096, NULL, 1, &buttonTaskHandle, 0);
 
     setupWiFi();
     setupBot();
@@ -43,5 +49,14 @@ void lcdTask(void* parameter) {
     while (true) {
         updateLCD();
         vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
+
+
+
+void buttonTask(void* parameter) {
+    while (true) {
+        useButtons();
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }

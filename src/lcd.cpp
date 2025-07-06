@@ -17,8 +17,9 @@ void setupLCD() {
 }
 
 void updateLCD() {
-  lcd.clear();
-  startLCD();
+  String tempo = formatTimeMMSS(getCountdown());
   lcd.setCursor(0, 1);
-  lcd.print(formatTimeMMSS(getCountdown()));
+  lcd.print("                ");
+  lcd.setCursor(0, 1);
+  lcd.print(tempo);
 }
