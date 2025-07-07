@@ -70,6 +70,7 @@ void handleCountdownTick() {
             Serial.print("Tempo restante: ");
             Serial.println(formatTimeMMSS(countdownSeconds));
           } else {
+            addLog("Sessão pomodoro terminada!");
             Serial.println("Tempo esgotado!");
             finishTime();
             isRunning = false;
