@@ -11,21 +11,20 @@ void startLCD() {
 }
 
 void setupLCD() {
-  lcd.init(); // Initialize the LCD
+  lcd.init();
   lcd.backlight();
   lcd.clear();
   startLCD();
 }
 
-String ultimoTempo = "";  // ← precisa ser global (ou static)
+String ultimoTempo = "";
 
 void updateLCD() {
   String tempo = formatTimeMMSS(getCountdown());
 
-  // Só atualiza o LCD se o tempo mudou
   if (tempo != ultimoTempo) {
     lcd.setCursor(0, 1);
-    lcd.print("                "); // limpa a linha de forma leve
+    lcd.print("                ");
     lcd.setCursor(0, 1);
     lcd.print(tempo);
     ultimoTempo = tempo;
