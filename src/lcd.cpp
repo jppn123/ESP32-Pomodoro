@@ -18,17 +18,21 @@ void setupLCD() {
 }
 
 String ultimoTempo = "";
+bool LAST_IS_FOCUS_TIME = IS_FOCUS_TIME;
 
 void updateLCD() {
   String tempo = formatTimeMMSS(getCountdown());
-  String title = String("Pomodoro - ") + (IS_FOCUS_TIME ? "Focus" : "Sleep");
-  
 
-  if (tempo != ultimoTempo) {
+  if (LAST_IS_FOCUS_TIME != IS_FOCUS_TIME) {
+    String title = String("Pomodoro - ") + (IS_FOCUS_TIME ? "Focus" : "Sleep");
     lcd.setCursor(0, 0); 
     lcd.print("                ");
     lcd.setCursor(0, 0);
     lcd.print(title);
+  }
+  
+
+  if (tempo != ultimoTempo) {
     lcd.setCursor(0, 1);
     lcd.print("                ");
     lcd.setCursor(0, 1);
