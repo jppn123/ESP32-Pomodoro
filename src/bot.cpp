@@ -20,6 +20,7 @@ void handleNewMessages(int numNewMessages){
         
         String text = bot.messages[i].text;
         String from_name = bot.messages[i].from_name;
+        String focusStatus = IS_FOCUS_TIME ? " (Foco)" : " (Descanso)";
 
         if (text == "/start" || text == "/info") {
             String welcome = "Olá " + from_name + ",\n";
@@ -35,7 +36,7 @@ void handleNewMessages(int numNewMessages){
 
         if (text == "/iniciar_tempo") {
         
-            String response = "Tempo iniciado em " + formatTimeMMSS(getCountdown());
+            String response = "Tempo iniciado em " + formatTimeMMSS(getCountdown()) + focusStatus;
             
             startCountdown();
             bot.sendMessage(chat_id, response, "");
@@ -43,7 +44,7 @@ void handleNewMessages(int numNewMessages){
 
         if (text == "/pausar_tempo") {
         
-            String response = "Tempo pausado em " + formatTimeMMSS(getCountdown());
+            String response = "Tempo pausado em " + formatTimeMMSS(getCountdown())+ focusStatus;
             
             pauseCountdown();
             bot.sendMessage(chat_id, response, "");
@@ -63,14 +64,15 @@ void handleNewMessages(int numNewMessages){
                 bot.sendMessage(chat_id, "Formato de tempo inválido. Use MM:SS (ex: 05:30)", "");
                 return;
             }
+            
         
             setCountdown(totalSeconds); // sua função para setar o tempo
-            String response = "Tempo definido para " + formatTimeMMSS(totalSeconds);
+            String response = "Tempo definido para " + formatTimeMMSS(totalSeconds) + focusStatus;
             bot.sendMessage(chat_id, response, "");
         }
    
         if (text.startsWith("/checar_tempo")) {            
-            bot.sendMessage(chat_id, formatTimeMMSS(getCountdown()), "");
+            bot.sendMessage(chat_id, formatTimeMMSS(getCountdown()) + focusStatus, "");
         }
 
         if (text.startsWith("/checar_logs")) {
