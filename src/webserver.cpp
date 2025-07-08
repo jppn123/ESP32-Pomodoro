@@ -3,15 +3,12 @@
 #include "util.h"
 
 WebServer server(80);
-
-// Task handle for the web server
 TaskHandle_t serverTaskHandle = NULL;
 
-// Task function for handling server clients
 void serverTask(void *pvParameters) {
     for (;;) {
         server.handleClient();
-        vTaskDelay(1 / portTICK_PERIOD_MS); // Yield to other tasks
+        vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
 
@@ -155,6 +152,7 @@ void setupWebServer() {
                     <section class="timer-section" aria-labelledby="statusLabel">
                         <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true">Carregando estado...</div>
                         <div id="time" class="time" role="timer" aria-live="off" aria-atomic="true">25:00</div>
+                        <div id="mode" class="status" role="note" aria-live="polite" aria-atomic="true">Carregando modo...</div>
 
                         <div class="time-input">
                             <label for="minutes">Minutos:</label>
@@ -173,16 +171,14 @@ void setupWebServer() {
 
                     <section class="info-section">
                         <h2>Sobre a Técnica Pomodoro</h2>
-                        <p>A técnica Pomodoro, desenvolvida por Francesco Cirillo no final dos anos 1980, é um método de gerenciamento de tempo que promove a produtividade e o foco. Ela divide o trabalho em intervalos de 25 minutos, chamados "pomodoros", seguidos por pausas curtas de 5 minutos. Após quatro pomodoros, faz-se uma pausa mais longa de 15-30 minutos.</p>
-                        
+                        <p>A técnica Pomodoro, desenvolvida por Francesco Cirillo no final dos anos 1980, é um método de gerenciamento de tempo que promove a produtividade e o foco...</p>
                         <h3>Benefícios do Pomodoro</h3>
                         <ul>
-                            <li><strong>Melhora o Foco:</strong> Intervalos curtos ajudam a manter a concentração, reduzindo distrações.</li>
+                            <li><strong>Melhora o Foco:</strong> Intervalos curtos ajudam a manter a concentração...</li>
                             <li><strong>Reduz a Fadiga:</strong> Pausas regulares previnem o esgotamento mental.</li>
                             <li><strong>Aumenta a Produtividade:</strong> Metas claras para cada pomodoro incentivam a conclusão de tarefas.</li>
                             <li><strong>Gerencia o Tempo:</strong> Ajuda a estimar melhor o tempo necessário para tarefas.</li>
                         </ul>
-
                         <h3>Como Usar</h3>
                         <ol>
                             <li>Escolha uma tarefa.</li>
@@ -191,7 +187,6 @@ void setupWebServer() {
                             <li>Faça uma pausa de 5 minutos.</li>
                             <li>Após 4 pomodoros, faça uma pausa longa (15–30 minutos).</li>
                         </ol>
-
                         <p class="references">
                             Referências:<br>
                             <a href="https://francescocirillo.com/pages/pomodoro-technique" target="_blank">Francesco Cirillo - Técnica Pomodoro</a><br>
@@ -227,8 +222,10 @@ void setupWebServer() {
                             }
                             document.getElementById("status").innerText = actState;
                             document.getElementById("time").innerText = data.time;
+                            document.getElementById("mode").innerText = data.isFocus ? "Modo de Foco" : "Modo de Descanso";
                         } catch (error) {
                             document.getElementById("status").innerText = "Erro ao carregar estado";
+                            document.getElementById("mode").innerText = "Erro ao detectar modo";
                         }
                     }
 
@@ -266,7 +263,8 @@ void setupWebServer() {
     server.on("/status", HTTP_GET, []() {
         String json = "{";
         json += "\"state\": \"" + state + "\",";
-        json += "\"time\": \"" + formatTimeMMSS(getCountdown()) + "\"";
+        json += "\"time\": \"" + formatTimeMMSS(getCountdown()) + "\",";
+        json += "\"isFocus\": " + String(IS_FOCUS_TIME ? "true" : "false");
         json += "}";
         server.send(200, "application/json", json);
     });
@@ -300,7 +298,7 @@ void setupWebServer() {
                 uint32_t totalSeconds = minutes * 60 + seconds;
                 newCountdown(totalSeconds);
                 setCountdown(totalSeconds);
-                pauseCountdown(); // Pause after setting new time
+                pauseCountdown();
                 server.send(200, "text/plain", "Tempo definido");
             } else {
                 server.send(400, "text/plain", "Valores de tempo inválidos");
@@ -313,18 +311,17 @@ void setupWebServer() {
     server.begin();
     Serial.println("Servidor HTTP iniciado: http://" + WiFi.localIP().toString());
 
-    // Create a task for handling server clients
     xTaskCreatePinnedToCore(
-        serverTask,           // Task function
-        "ServerTask",        // Task name
-        4096,                // Stack size (bytes)
-        NULL,                // Task parameters
-        1,                   // Priority
-        &serverTaskHandle,   // Task handle
-        1                    // Core (0 or 1, use 1 for web server to avoid core 0's WiFi tasks)
+        serverTask,
+        "ServerTask",
+        4096,
+        NULL,
+        1,
+        &serverTaskHandle,
+        1
     );
 }
 
 void serverHandleClient() {
-    // No longer needed in the main loop, handled by serverTask
+    // Não usado mais, tarefa separada trata isso
 }
