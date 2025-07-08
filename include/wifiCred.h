@@ -1,8 +1,8 @@
 #ifndef WIFICRED_H
 #define WIFICRED_H
 
-#define SSID "TP-LINK_7076"
-#define PASSWORD "95856568"
+#define SSID "ifce-alunos"
+#define PASSWORD "4lun0s"
 
 void setupWiFi();
 

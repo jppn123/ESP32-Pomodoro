@@ -1,4 +1,4 @@
-#include <arduino.h>
+#include <Arduino.h>
 #include "sensor.h"
 #include "countdown.h"
 #include "buzzer.h"
@@ -43,7 +43,7 @@ void readSensor() {
   long duration = medianaDuration();
   float distanceCm = duration * SOUND_SPEED / 2;
 
-  if(distanceCm > 100){
+  if(distanceCm > 100 && IS_FOCUS_TIME){
     pauseCountdown();
     beep(2000, 500);
   }

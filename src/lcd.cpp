@@ -7,7 +7,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void startLCD() {
   lcd.setCursor(0, 0); 
-  lcd.print("Pomodoro ESP32");
+  lcd.print("Pomodoro - Focus");
 }
 
 void setupLCD() {
@@ -21,8 +21,14 @@ String ultimoTempo = "";
 
 void updateLCD() {
   String tempo = formatTimeMMSS(getCountdown());
+  String title = String("Pomodoro - ") + (IS_FOCUS_TIME ? "Focus" : "Sleep");
+  
 
   if (tempo != ultimoTempo) {
+    lcd.setCursor(0, 0); 
+    lcd.print("                ");
+    lcd.setCursor(0, 0);
+    lcd.print(title);
     lcd.setCursor(0, 1);
     lcd.print("                ");
     lcd.setCursor(0, 1);

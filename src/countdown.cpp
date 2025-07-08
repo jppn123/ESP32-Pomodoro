@@ -11,6 +11,8 @@ uint32_t settedCountdownSeconds = 0;
 bool isRunning = false;
 String state = "paused";
 
+bool IS_FOCUS_TIME = true;
+
 void startCountdown() {
     if (isRunning || countdownSeconds == 0) return;
     estadoSistema = RODANDO;
@@ -73,6 +75,7 @@ void handleCountdownTick() {
             Serial.println(formatTimeMMSS(countdownSeconds));
           } else {
             addLog("Sessão pomodoro terminada!");
+            IS_FOCUS_TIME = !IS_FOCUS_TIME;
             Serial.println("Tempo esgotado!");
             finishTime();
             isRunning = false;
