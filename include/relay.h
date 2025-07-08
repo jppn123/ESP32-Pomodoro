@@ -1,10 +1,10 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#define RELE1 21
-#define RELE2 19
+#define RELE1 27
 
 void setupRelay();
 void modifyRelay(bool state);
+void restartSystemViaRelay();
 
 #endif

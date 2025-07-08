@@ -3,8 +3,6 @@
 #include "util.h"
 #include "countdown.h"
 
-
-
 unsigned long buttonPressTime1 = 0;
 unsigned long buttonPressTime2 = 0;
 unsigned long buttonPressTime3 = 0;
@@ -109,6 +107,6 @@ void useButtons() {
   if (buttonState3 == HIGH && buttonHandled) {
     buttonHandled = false;
   }
-
+  
   delay(50);
 }

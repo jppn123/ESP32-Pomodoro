@@ -3,7 +3,7 @@
 #include "countdown.h"
 #include "util.h"
 
-LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
 
 void startLCD() {
   lcd.setCursor(0, 0); 
@@ -11,15 +11,22 @@ void startLCD() {
 }
 
 void setupLCD() {
-  lcd.begin(16, 2); 
+  lcd.init();
+  lcd.backlight();
   lcd.clear();
   startLCD();
 }
 
+String ultimoTempo = "";
+
 void updateLCD() {
   String tempo = formatTimeMMSS(getCountdown());
-  lcd.setCursor(0, 1);
-  lcd.print("                ");
-  lcd.setCursor(0, 1);
-  lcd.print(tempo);
+
+  if (tempo != ultimoTempo) {
+    lcd.setCursor(0, 1);
+    lcd.print("                ");
+    lcd.setCursor(0, 1);
+    lcd.print(tempo);
+    ultimoTempo = tempo;
+  }
 }
