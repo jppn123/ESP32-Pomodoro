@@ -79,6 +79,9 @@ void handleCountdownTick() {
             Serial.println("Tempo esgotado!");
             finishTime();
             isRunning = false;
+            if (!IS_FOCUS_TIME) {
+                setCountdown(300);
+            }
           }
         }
     }
