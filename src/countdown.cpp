@@ -13,6 +13,7 @@ String state = "paused";
 
 void startCountdown() {
     if (isRunning || countdownSeconds == 0) return;
+    estadoSistema = RODANDO;
     isRunning = true;
     state = "started";
     previousMillis = millis();
@@ -21,6 +22,7 @@ void startCountdown() {
   
 void pauseCountdown() {
     if (!isRunning) return;
+    estadoSistema = PAUSADO;
     isRunning = false;
     state = "paused";
     addLog("Tempo pausado em " + formatTimeMMSS(countdownSeconds));

@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#include "util.h"
+
+EstadoSistema estadoSistema = PAUSADO;
 
 String formatTimeMMSS(int totalSeconds) {
     int minutes = totalSeconds / 60;
@@ -11,7 +14,7 @@ int parseTimeMMSS(const String& timeStr) {
     int minutes, seconds;
     int matched = sscanf(timeStr.c_str(), "%d:%d", &minutes, &seconds);
     if (matched != 2 || minutes < 0 || seconds < 0 || seconds >= 60) {
-        return -1; // Formato inválido
+        return -1;
     }
     return minutes * 60 + seconds;
 }
