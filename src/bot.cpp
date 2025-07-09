@@ -13,10 +13,10 @@ unsigned long lastTimeBotRan;
 void handleNewMessages(int numNewMessages){
     for (int i=0; i<numNewMessages; i++) {
         String chat_id = String(bot.messages[i].chat_id);
-        if (chat_id != CHAT_ID){
-            bot.sendMessage(chat_id, "Usuário não autorizado", "");
-            continue;
-        }
+        // if (chat_id != CHAT_ID){
+        //     bot.sendMessage(chat_id, "Usuário não autorizado", "");
+        //     continue;
+        // }
         
         String text = bot.messages[i].text;
         String from_name = bot.messages[i].from_name;
@@ -30,6 +30,7 @@ void handleNewMessages(int numNewMessages){
             welcome += "/iniciar_tempo - Inicia o tempo decrementando o contador\n";
             welcome += "/pausar_tempo - Pausa o contador\n";
             welcome += "/checar_logs - Verifica histórico de ações sobre o timer\n";
+            welcome += "/ip_webServer - Retorna o ip para acesso ao web server (precisa estar na mesma rede wifi)\n";
             
             bot.sendMessage(chat_id, welcome, "");
         }
@@ -77,6 +78,10 @@ void handleNewMessages(int numNewMessages){
 
         if (text.startsWith("/checar_logs")) {
             bot.sendMessage(chat_id, readLastLogs(10), "");
+        }
+        if(text == "/ip_webServer"){
+            String ip = WiFi.localIP().toString();
+            bot.sendMessage(chat_id, "Acesse o web server em: http://" + ip, "");
         }
     }
 }

@@ -28,16 +28,14 @@ void useButtons() {
     }
 
     if (!actionDone1) {
-      // Se botão 3 está segurado, só permite se for um clique rápido
       if (button3Held) {
         if ((millis() - buttonPressTime1) < 400) {
           adjustCountdown((5 * 60));
           Serial.println("Botão 1: ajuste de tempo");
           actionDone1 = true;
         }
-        // else: botão 1 foi segurado por muito tempo → não faz nada
       } else {
-        // Comportamento normal se botão 3 não está segurado
+        
         startCountdown();
         Serial.println("Botão 1: iniciar");
         actionDone1 = true;
@@ -54,16 +52,13 @@ void useButtons() {
     }
 
     if (!actionDone2) {
-      // Se botão 3 está segurado, só permite se for um clique rápido
       if (button3Held) {
         if ((millis() - buttonPressTime2) < 400) {
           adjustCountdown(-(5 * 60));
           Serial.println("Botão 2: ajuste de tempo");
           actionDone2 = true;
         }
-        // else: botão 1 foi segurado por muito tempo → não faz nada
       } else {
-        // Comportamento normal se botão 3 não está segurado
         pauseCountdown();
         Serial.println("Botão 2: pausar");
         actionDone2 = true;

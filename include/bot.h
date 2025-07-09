@@ -5,7 +5,7 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 
-#define BOT_TOKEN "8105368493:AAENsDUCdCiR7kQc3flK6qZG-1OkZ0-ijRg"
+#define BOT_TOKEN "8085947503:AAE2skofcIwIkXRZJyxXs8aXbOBEe6LHgno"
 #define CHAT_ID "1546484802"
 #define DELAY 500
 #endif
